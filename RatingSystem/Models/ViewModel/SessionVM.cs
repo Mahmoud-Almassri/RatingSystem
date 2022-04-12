@@ -2,6 +2,9 @@
 {
     public class SessionVM
     {
-        public List<Session> SesstionList { get; set; }
+        public int Id { get; set; }
+        public string SessionName { get; set; }
+        public string Presenter { get; set; }
+        public double RateAverage { get; set; }
     }
 }
