@@ -53,7 +53,16 @@ namespace RatingSystem.Controllers
         }
         public IActionResult AddSession()
         {
-            return View();
+            var currentUser = _context.Users.Where(x => x.Id == Convert.ToInt32(TempData["UserId"])).FirstOrDefault();
+            TempData["UserId"] = Convert.ToInt32(currentUser.Id);
+            if (currentUser?.UserRole?.ToLower() == "admin")
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Auth");
+            }
         }
         public IActionResult SubmitAddSession()
         {
@@ -66,35 +75,45 @@ namespace RatingSystem.Controllers
         }
         public IActionResult SessionRate()
         {
-            SessionRateVM sessionRateVM = new SessionRateVM();
-            List<Rate> sessionRates = _context.Rates.Include(x => x.Rate_Session).Include(x => x.Rate_User).ToList();
-            List<Session> Session = _context.Sessions.ToList();
-            var sessionRateAvarege = from t in _context.Rates
-                       group t by new
-                       {
-                           t.Session_Id
-                       } into g
-                       select new
-                       {
-                           Average = g.Average(p => p.RateDegree),
-                           g.Key.Session_Id
-                       };
-            List<SessionVM> sessionList = new List<SessionVM>();
-            foreach (var session in Session)
+            var currentUser = _context.Users.Where(x=>x.Id == Convert.ToInt32(TempData["UserId"])).FirstOrDefault();
+            TempData["UserId"] = Convert.ToInt32(currentUser.Id);
+            if (currentUser?.UserRole?.ToLower() == "admin")
             {
-                SessionVM sessionObj = new SessionVM();
-                sessionObj.Id = Convert.ToInt32(session.Id);
-                sessionObj.Presenter = session.Presenter;
-                sessionObj.SessionName = session.SessionName;
-                sessionObj.RateAverage = sessionRateAvarege.Where(x => x.Session_Id == session.Id).Select(x => x.Average).FirstOrDefault();
-                sessionList.Add(sessionObj);
+                SessionRateVM sessionRateVM = new SessionRateVM();
+                List<Rate> sessionRates = _context.Rates.Include(x => x.Rate_Session).Include(x => x.Rate_User).ToList();
+                List<Session> Session = _context.Sessions.ToList();
+                var sessionRateAvarege = from t in _context.Rates
+                                         group t by new
+                                         {
+                                             t.Session_Id
+                                         } into g
+                                         select new
+                                         {
+                                             Average = g.Average(p => p.RateDegree),
+                                             g.Key.Session_Id
+                                         };
+                List<SessionVM> sessionList = new List<SessionVM>();
+                foreach (var session in Session)
+                {
+                    SessionVM sessionObj = new SessionVM();
+                    sessionObj.Id = Convert.ToInt32(session.Id);
+                    sessionObj.Presenter = session.Presenter;
+                    sessionObj.SessionName = session.SessionName;
+                    sessionObj.RateAverage = sessionRateAvarege.Where(x => x.Session_Id == session.Id).Select(x => x.Average).FirstOrDefault();
+                    sessionList.Add(sessionObj);
 
 
+                }
+                sessionRateVM.SesstionList = sessionList;
+                sessionRateVM.Rate = sessionRates.OrderBy(x => x.Session_Id).ToList();
+
+                return View(sessionRateVM);
             }
-            sessionRateVM.SesstionList = sessionList;
-            sessionRateVM.Rate = sessionRates;
+            else
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             
-            return View(sessionRateVM);
         }
     }
 }
