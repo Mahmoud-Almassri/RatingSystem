@@ -12,6 +12,27 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+                $( document ).ready(function() {
+             debugger;
+                var starCount=0;
+                $('.star').each(function(){
+                    starCount++;
+                    var newID='menu'+starCount;
+                    $(this).attr('id',newID);
+                    $(this).attr('for',newID);
+                });
+                var starLableCount=0;
+                $('.starLable').each(function(){
+                    starLableCount++;
+                    var newID='menu'+starLableCount;
+                    $(this).attr('for',newID);
+                });
+        });
+
+    </script>
     <style>
         * {
             margin: 0;
@@ -110,33 +131,38 @@
                 <th>Your Comment</th>
                 <th>Action</th>
             </tr>
-            @foreach (var item in Model.SesstionList)
-            {
-                <form method="post" action="AddRate">
-                <tr>
-                    <td hidden><input name="SessionId" value="@item.Id"></td>
-                    <td>@item.SessionName</td>
-                    <td>@item.Presenter</td>
-                        @*<td><input type="number" name="Rate" /></td>*@
-                    <td>
-                        <div class="">
-                            <input type="radio" id="star1" name="rate" value="1" />
-                            <label for="star1" title="text">1 star</label>
-                            <input type="radio" id="star2" name="rate" value="2" />
-                            <label for="star2" title="text">2 stars</label>
-                            <input type="radio" id="star3" name="rate" value="3" />
-                            <label for="star3" title="text">3 stars</label>
-                            <input type="radio" id="star4" name="rate" value="4" />
-                            <label for="star4" title="text">4 stars</label>
-                            <input type="radio" id="star5" name="rate" value="5" />
-                            <label for="star5" title="text">5 stars</label>
-                        </div>
-                    </td>
-                    <td><input type="text" class="form-control" name="Comment" placeholder="Your Comment"/></td>
-                    <td><button type="submit" style="width:100%;background: #0d5056;" class="btn-primary" value="Save">Save</button></td>
-                </tr>
-                </form>
+            @{
+                int count = 0;
+                foreach (var item in Model.SesstionList)
+                {
+                    <form method="post" action="AddRate">
+                    <tr>
+                        <td hidden><input name="SessionId" value="@item.Id"></td>
+                        <td>@item.SessionName</td>
+                        <td>@item.Presenter</td>
+                        <td>
+                            <div class="rate">
+                                <input type="radio" class="star" id="star5" name="rate" value="5" />
+                                <label for="star5" class="starLable" title="text">5 stars</label>
+                                <input type="radio" class="star" id="star4" name="rate" value="4" />
+                                <label for="star4" class="starLable" title="text">4 stars</label>
+                                <input type="radio" class="star" id="star3" name="rate" value="3" />
+                                <label for="star3" class="starLable" title="text">3 stars</label>
+                                <input type="radio" class="star" id="star2" name="rate" value="2" />
+                                <label for="star2" class="starLable" title="text">2 stars</label>
+                                <input type="radio" class="star" id="star" name="rate" value="1" />
+                                <label for="star" class="starLable" title="text">1 star</label>
+                            </div>
+                        </td>
+                        <td><input type="text" class="form-control" name="Comment" placeholder="Your Comment" /></td>
+                        <td><button type="submit" style="width:100%;background: #0d5056;" class="btn-primary" value="Save">Save</button></td>
+                    </tr>
+                    </form>
+                    count++;
+                }
+
             }
+
         </table>
 
 
