@@ -28,6 +28,7 @@ namespace RatingSystem.Controllers
             {
                 return View("Registration");
             }
+            user.UserRole = String.Empty;
             _context.Users.Add(user);
             _context.SaveChanges();
             var credinital = _context.Users.Select(x => new { x.UserName, x.Password, x.Id }).Where(x => x.UserName == user.UserName).FirstOrDefault();
